@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEYONDSOUND 音乐库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 支持弹窗图片链接占位区：在此处插入图片URL -->
+    <div id="support-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-modal" class="close-btn">&times;</button>
+            <img src="" alt="支持我们" class="modal-image">
+        </div>
+    </div>
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <h1>beyond the sound 音乐库</h1>
+            </div>
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link active">首页</a>
+                <a href="#" class="nav-link">分类浏览</a>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="搜索音乐人、专辑或歌曲...">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <a href="#" class="nav-link">关于我们</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- 音乐分区展示模块 -->
+        <section class="horizontal-section">
+            <div class="artist-card">
+                <img data-src="https://ts4.tc.mm.bing.net/th/id/OIP-C.-jtXLaF-ObKre2D9ZsdwhwHaI1?rs=1&pid=ImgDetMain&o=7&rm=3" alt="达明一派" class="artist-image">
+                <h3 class="artist-name">达明一派</h3>
+                <p class="artist-desc"><!-- artist_desc_placeholder --></p>
+            </div>
+            <div class="artist-card">
+                <img data-src="https://ts1.tc.mm.bing.net/th/id/R-C.e3ae759e717d8670cbf29ec9c01e8062?rik=asJP4UkZX3rX4A&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10115%2f535%2fw550h785%2f20190401%2f6488-hvcmeux1214794.jpg&ehk=Q%2bL7mmlClvIFWe9IyDbobT3qQjYAyw86ML2xlfLRWgk%3d&risl=&pid=ImgRaw&r=0" alt="罗大佑" class="artist-image">
+                <h3 class="artist-name">罗大佑</h3>
+                <p class="artist-desc"><!-- artist_desc_placeholder --></p>
+            </div>
+            <div class="artist-card">
+                <img data-src="https://ts3.tc.mm.bing.net/th/id/OIP-C.asglERf2Vv8dJBHe46Fc-gAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="陈升" class="artist-image">
+                <h3 class="artist-name">陈升</h3>
+                <p class="artist-desc"><!-- artist_desc_placeholder --></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 BEYONDSOUND 音乐库</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
