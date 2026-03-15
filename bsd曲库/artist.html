@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐人 - BEYONDSOUND 音乐库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <h1>beyond the sound 音乐库</h1>
+            </div>
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="#" class="nav-link">分类浏览</a>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="搜索音乐人、专辑或歌曲...">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <a href="#" class="nav-link">关于我们</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="artist-page">
+        <!-- 英雄区域 -->
+        <section class="hero-section">
+            <img data-src="https://pic3.zhimg.com/v2-86c2df60b70631d96014cab25ddd1f2e_r.jpg" src="https://pic3.zhimg.com/v2-86c2df60b70631d96014cab25ddd1f2e_r.jpg" alt="陈升" class="hero-image loaded">
+            <div class="hero-content">
+                <h1>陈升</h1>
+                <p>陈升，本名陈志升，1958年10月29日出生于台湾彰化县，台湾创作歌手、音乐制作人。代表作品包括《把悲伤留给自己》、《张三的歌》、《风筝》等。他的音乐风格融合了摇滚、民谣和流行元素，歌词充满诗意和哲理。</p>
+            </div>
+        </section>
+
+        <!-- 专辑展示区 -->
+        <section class="albums-section">
+            <h2 class="section-title">专辑</h2>
+            <div class="albums-grid">
+                <!-- 动态数据区域：专辑信息 -->
+                <div class="album-card" onclick="window.location.href='album.html?id=1'" style="cursor: pointer;">
+                    <img data-src="https://so1.360tres.com/t01d0665fa606e57c48.jpg" src="https://so1.360tres.com/t01d0665fa606e57c48.jpg" alt="拥挤的乐园" class="album-cover loaded" onclick="window.location.href='album.html?id=1'; return false;" style="cursor: pointer;">
+                    <h3 class="album-name">《拥挤的乐园》</h3>
+                    <p class="album-year">1988</p>
+                </div>
+                <!-- 新专辑卡片 -->
+                <div class="album-card" onclick="window.location.href='aboutman.html'" style="cursor: pointer;">
+                    <img data-src="https://bobbychen.cc/blog/zb_users/upload/2023/07/202307031688370476251204.jpg" src="https://bobbychen.cc/blog/zb_users/upload/2023/07/202307031688370476251204.jpg" alt="关于男人特辑（ELLE'96十月纪念CD）" class="album-cover loaded" onclick="window.location.href='aboutman.html'; return false;" style="cursor: pointer;">
+                    <h3 class="album-name">《关于男人特辑（ELLE'96十月纪念CD）》</h3>
+                    <p class="album-year">1996</p>
+                </div>
+                <!-- 更多专辑卡片 -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 BEYONDSOUND 音乐库</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>万能青年旅店 - BEYONDSOUND 音乐库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <h1>beyond the sound 音乐库</h1>
+            </div>
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="#" class="nav-link">分类浏览</a>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="搜索音乐人、专辑或歌曲...">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <a href="#" class="nav-link">关于我们</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="artist-page">
+        <!-- 英雄区域 -->
+        <section class="hero-section">
+            <img data-src="https://ts4.tc.mm.bing.net/th/id/OIP-C.AXW8HVaE4JM_X4G3_XNJhQHaEc?rs=1&pid=ImgDetMain&o=7&rm=3" src="https://ts4.tc.mm.bing.net/th/id/OIP-C.AXW8HVaE4JM_X4G3_XNJhQHaEc?rs=1&pid=ImgDetMain&o=7&rm=3" alt="万能青年旅店" class="hero-image loaded">
+            <div class="hero-content">
+                <h1>万能青年旅店</h1>
+                <p>万能青年旅店是一支来自中国石家庄的摇滚乐队，成立于2002年。乐队成员包括董亚千（主唱/吉他）、史立（贝斯）、姬赓（贝斯/作词）和冯江（鼓手）。他们的音乐风格融合了摇滚、民谣、爵士等多种元素，歌词充满对社会和生活的思考。代表作品包括《秦皇岛》、《杀死那个石家庄人》、《大石碎胸口》等。</p>
+            </div>
+        </section>
+
+        <!-- 专辑展示区 -->
+        <section class="albums-section">
+            <h2 class="section-title">专辑</h2>
+            <div class="albums-grid">
+                <!-- 动态数据区域：专辑信息 -->
+                <div class="album-card">
+                    <img data-src="https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2561757264.jpg" alt="万能青年旅店" class="album-cover">
+                    <h3 class="album-name">《万能青年旅店》</h3>
+                    <p class="album-year">2010</p>
+                </div>
+                <div class="album-card" onclick="window.location.href='album-jixinan.html'" style="cursor: pointer;">
+                    <img data-src="https://pic2.zhimg.com/v2-dad75693061a7c8161b1ca41f23b6485_1440w.jpg?source=172ae18b" src="https://pic2.zhimg.com/v2-dad75693061a7c8161b1ca41f23b6485_1440w.jpg?source=172ae18b" alt="冀西南林路行" class="album-cover loaded" onclick="window.location.href='album-jixinan.html'; return false;" style="cursor: pointer;">
+                    <h3 class="album-name">《冀西南林路行》</h3>
+                    <p class="album-year">2020</p>
+                </div>
+                <!-- 更多专辑卡片 -->
+            </div>
+        </section>
+
+        <!-- 单曲专区 -->
+        <section class="singles-section">
+            <h2 class="section-title">单曲</h2>
+            <div class="singles-grid">
+                <!-- 动态数据区域：单曲信息 -->
+                <div class="single-card" onclick="navigateToSinglePage('乌云典当记')">
+                    <img data-src="https://picui.ogmua.cn/s1/2026/03/13/69b42eac17d26.webp" src="https://picui.ogmua.cn/s1/2026/03/13/69b42eac17d26.webp" alt="杀死那个石家庄人" class="single-cover loaded" onclick="navigateToSinglePage('杀死那个石家庄人'); return false;">
+                    <h3 class="single-name">乌云典当记</h3>
+                    <p class="single-year">2012</p>
+                </div>
+                <div class="single-card" onclick="navigateToSinglePage('秦皇岛')">
+                    <img data-src="https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2561757264.jpg" alt="秦皇岛" class="single-cover" onclick="navigateToSinglePage('秦皇岛'); return false;">
+                    <h3 class="single-name">秦皇岛</h3>
+                    <p class="single-year">2010</p>
+                </div>
+                <div class="single-card" onclick="navigateToSinglePage('大石碎胸口')">
+                    <img data-src="https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2561757264.jpg" alt="大石碎胸口" class="single-cover" onclick="navigateToSinglePage('大石碎胸口'); return false;">
+                    <h3 class="single-name">大石碎胸口</h3>
+                    <p class="single-year">2010</p>
+                </div>
+                <div class="single-card" onclick="navigateToSinglePage('在这颗行星所有的夜晚')">
+                    <img data-src="https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2614532575.jpg" alt="在这颗行星所有的夜晚" class="single-cover" onclick="navigateToSinglePage('在这颗行星所有的夜晚'); return false;">
+                    <h3 class="single-name">在这颗行星所有的夜晚</h3>
+                    <p class="single-year">2020</p>
+                </div>
+                <!-- 更多单曲卡片 -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 BEYONDSOUND 音乐库</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
