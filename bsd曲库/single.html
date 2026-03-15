@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单曲详情 - BEYONDSOUND 音乐库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <h1>beyond the sound 音乐库</h1>
+            </div>
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="artist4.html" class="nav-link">返回艺人</a>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="搜索音乐人、专辑或歌曲...">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <a href="#" class="nav-link">关于我们</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="single-page">
+        <!-- 单曲详情 -->
+        <section class="single-detail">
+            <img data-src="https://picui.ogmua.cn/s1/2026/03/13/69b42eac17d26.webp" src="https://picui.ogmua.cn/s1/2026/03/13/69b42eac17d26.webp" alt="单曲封面" class="single-cover-large loaded">
+            <div class="single-info">
+                <h1 id="single-title">单曲详情</h1>
+                <h2><a href="artist4.html">万能青年旅店</a></h2>
+                <div class="single-meta">
+                    <p>发行年份：2012</p>
+                    <p>《智利说不》中文主题曲</p>
+                </div>
+                <div class="button-group">
+                    <button class="access-btn" onclick="showDonationPrompt('万能青年旅店')">访问资源</button>
+                    <button class="play-btn" id="play-btn">
+                        <span class="play-icon">▶</span>
+                        <span class="pause-icon" style="display: none;">⏸</span>
+                    </button>
+                </div>
+                <div class="audio-player">
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="time-display">
+                        <span id="current-time">0:00</span>
+                        <span>/</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 歌词区域 -->
+        <section class="lyrics-section">
+            <h2 class="section-title">歌词</h2>
+            <div class="lyrics-content">
+                <img src="https://picui.ogmua.cn/s1/2026/03/13/69b432c6c8909.webp" alt="歌词图片" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 BEYONDSOUND 音乐库</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // 获取URL参数中的单曲名称
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // 页面加载时设置单曲标题
+        window.addEventListener('DOMContentLoaded', function() {
+            const singleName = getUrlParam('name');
+            if (singleName) {
+                document.getElementById('single-title').textContent = singleName;
+            }
+        });
+
+        // 音频播放器功能
+        const audio = new Audio('https://file.1115111.xyz/2024/07/21/ppxpeo.m4a');
+        const playBtn = document.getElementById('play-btn');
+        const playIcon = document.querySelector('.play-icon');
+        const pauseIcon = document.querySelector('.pause-icon');
+        const progressContainer = document.querySelector('.progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+
+        // 播放/暂停切换
+        playBtn.addEventListener('click', function() {
+            if (audio.paused) {
+                audio.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'inline';
+            } else {
+                audio.pause();
+                playIcon.style.display = 'inline';
+                pauseIcon.style.display = 'none';
+            }
+        });
+
+        // 更新进度条和时间显示
+        audio.addEventListener('timeupdate', function() {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = progress + '%';
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        });
+
+        // 音频加载完成后设置总时长
+        audio.addEventListener('loadedmetadata', function() {
+            durationEl.textContent = formatTime(audio.duration);
+        });
+
+        // 音频播放结束后重置状态
+        audio.addEventListener('ended', function() {
+            playIcon.style.display = 'inline';
+            pauseIcon.style.display = 'none';
+            progressBar.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
+        });
+
+        // 点击进度条跳转到指定位置
+        progressContainer.addEventListener('click', function(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        });
+
+        // 格式化时间
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+    </script>
+</body>
+</html>
