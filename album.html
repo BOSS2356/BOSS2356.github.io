@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专辑详情 - BEYONDSOUND 音乐库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <h1>beyond the sound 音乐库</h1>
+            </div>
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="#" class="nav-link">分类浏览</a>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="搜索音乐人、专辑或歌曲...">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <a href="#" class="nav-link">关于我们</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="album-page">
+        <!-- 专辑详情 -->
+        <section class="album-detail">
+            <img data-src="https://so1.360tres.com/t01d0665fa606e57c48.jpg" src="https://so1.360tres.com/t01d0665fa606e57c48.jpg" alt="拥挤的乐园" class="album-cover-large loaded">
+            <div class="album-info">
+                <h1>《拥挤的乐园》</h1>
+                <h2><a href="artist.html">陈升</a></h2>
+                <div class="album-meta">
+                    <p>发行年份：1988</p>
+                    <p>曲目数量：9</p>
+                    <p>总时长：42:30</p>
+                </div>
+                <button class="access-btn" onclick="showDonationPrompt('拥挤的乐园')">访问资源</button>
+            </div>
+        </section>
+
+        <!-- 曲目列表 -->
+        <section class="tracklist">
+            <h2 class="section-title">专辑曲目：</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>歌曲</th>
+                        <th>时长</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 动态数据区域：曲目列表 -->
+                    <tr>
+                        <td class="track-number">01</td>
+                        <td class="track-name">
+                            拥挤的乐园
+                        </td>
+                        <td class="track-duration">4:35</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">02</td>
+                        <td class="track-name">
+                            夜
+                        </td>
+                        <td class="track-duration">4:42</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">03</td>
+                        <td class="track-name">
+                            凡人的告白书
+                        </td>
+                        <td class="track-duration">5:18</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">04</td>
+                        <td class="track-name">
+                            责任
+                        </td>
+                        <td class="track-duration">4:50</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">05</td>
+                        <td class="track-name">
+                            黄土
+                        </td>
+                        <td class="track-duration">4:25</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">06</td>
+                        <td class="track-name">
+                            停火
+                        </td>
+                        <td class="track-duration">4:15</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">07</td>
+                        <td class="track-name">
+                            回到我身边
+                        </td>
+                        <td class="track-duration">4:30</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">08</td>
+                        <td class="track-name">
+                            思念
+                        </td>
+                        <td class="track-duration">4:45</td>
+                    </tr>
+                    <tr>
+                        <td class="track-number">09</td>
+                        <td class="track-name">
+                            乡
+                        </td>
+                        <td class="track-duration">5:10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 BEYONDSOUND 音乐库</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
