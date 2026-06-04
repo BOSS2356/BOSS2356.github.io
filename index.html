@@ -262,6 +262,133 @@
             opacity: 0.7;
         }
         
+        .album-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
+        
+        .album-card {
+            position: relative;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .album-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+        
+        .album-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+        }
+        
+        .album-card:hover .album-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .album-front, .album-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .album-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .album-back {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            text-align: center;
+            color: white;
+        }
+        
+        .album-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .album-artist {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .album-year {
+            font-size: 11px;
+            opacity: 0.7;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        .album-record {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 85%;
+            height: 85%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #1a1a1a 0%, #333 40%, #1a1a1a 100%);
+            border-radius: 50%;
+            z-index: -1;
+            transition: transform 0.8s;
+        }
+        
+        .album-card:hover .album-record {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+        
+        .album-record::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, #444 0%, #222 100%);
+            border-radius: 50%;
+        }
+        
+        .album-record::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8%;
+            height: 8%;
+            background: #666;
+            border-radius: 50%;
+        }
+        
+        @media (max-width: 767px) {
+            .album-wall {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 16px;
+            }
+        }
+        
         @media (max-width: 767px) {
             .hamburger {
                 display: block;
@@ -372,7 +499,13 @@
                             <div class="mac-dot mac-dot-green"></div>
                         </div>
                     </div>
-                    <div class="text-gray-600">音乐墙</div>
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">我的音乐墙</h2>
+                        <p class="text-gray-500">探索我喜欢的音乐专辑</p>
+                    </div>
+                    <div id="album-wall" class="album-wall">
+                        <!-- 唱片墙内容通过JavaScript动态生成 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -440,6 +573,142 @@
         
         function closeAvatarModal() {
             document.getElementById('avatar-modal').classList.remove('active');
+        }
+        
+        const albums = [
+            {
+                id: 1,
+                title: "Midnights",
+                artist: "Taylor Swift",
+                year: 2022,
+                imageSeed: "midnights"
+            },
+            {
+                id: 2,
+                title: "Utopia",
+                artist: "Travis Scott",
+                year: 2023,
+                imageSeed: "utopia"
+            },
+            {
+                id: 3,
+                title: "Starboy",
+                artist: "The Weeknd",
+                year: 2016,
+                imageSeed: "starboy"
+            },
+            {
+                id: 4,
+                title: "After Hours",
+                artist: "The Weeknd",
+                year: 2020,
+                imageSeed: "afterhours"
+            },
+            {
+                id: 5,
+                title: "Blonde",
+                artist: "Frank Ocean",
+                year: 2016,
+                imageSeed: "blonde"
+            },
+            {
+                id: 6,
+                title: "DAMN.",
+                artist: "Kendrick Lamar",
+                year: 2017,
+                imageSeed: "damn"
+            },
+            {
+                id: 7,
+                title: "good kid, m.A.A.d city",
+                artist: "Kendrick Lamar",
+                year: 2012,
+                imageSeed: "gkmc"
+            },
+            {
+                id: 8,
+                title: "My Beautiful Dark Twisted Fantasy",
+                artist: "Kanye West",
+                year: 2010,
+                imageSeed: "mbdtf"
+            },
+            {
+                id: 9,
+                title: "Graduation",
+                artist: "Kanye West",
+                year: 2007,
+                imageSeed: "graduation"
+            },
+            {
+                id: 10,
+                title: "Chromatica",
+                artist: "Lady Gaga",
+                year: 2020,
+                imageSeed: "chromatica"
+            },
+            {
+                id: 11,
+                title: "Future Nostalgia",
+                artist: "Dua Lipa",
+                year: 2020,
+                imageSeed: "future"
+            },
+            {
+                id: 12,
+                title: "Fine Line",
+                artist: "Harry Styles",
+                year: 2019,
+                imageSeed: "fineline"
+            },
+            {
+                id: 13,
+                title: "Justice",
+                artist: "Justin Bieber",
+                year: 2021,
+                imageSeed: "justice"
+            },
+            {
+                id: 14,
+                title: "SOUR",
+                artist: "Olivia Rodrigo",
+                year: 2021,
+                imageSeed: "sour"
+            },
+            {
+                id: 15,
+                title: "Planet Her",
+                artist: "Doja Cat",
+                year: 2021,
+                imageSeed: "planether"
+            },
+            {
+                id: 16,
+                title: "Happier Than Ever",
+                artist: "Billie Eilish",
+                year: 2021,
+                imageSeed: "happier"
+            }
+        ];
+        
+        function renderAlbumWall() {
+            const container = document.getElementById('album-wall');
+            if (!container) return;
+            
+            container.innerHTML = albums.map(album => `
+                <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}\\n年份: ${album.year}')">
+                    <div class="album-record"></div>
+                    <div class="album-card-inner">
+                        <div class="album-front">
+                            <img src="https://picsum.photos/seed/${album.imageSeed}/400/400" alt="${album.title}">
+                        </div>
+                        <div class="album-back">
+                            <div class="album-title">${album.title}</div>
+                            <div class="album-artist">${album.artist}</div>
+                            <div class="album-year">${album.year}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
         
         const articles = [
@@ -642,6 +911,11 @@ nano hello.txt
             // 渲染文章列表页
             if (pageId === 'articles') {
                 renderArticlesList();
+            }
+            
+            // 渲染唱片墙
+            if (pageId === 'music') {
+                renderAlbumWall();
             }
             
             // 渲染文章详情页
