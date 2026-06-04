@@ -690,6 +690,54 @@
             }
         ];
         
+        async function getSpotifyAccessToken() {
+            const clientId = '892df114831a40d8bec7a3f20f3c8a36';
+            const clientSecret = '3b4a661e0667464e8b29e79a250895f3';
+            
+            try {
+                const response = await fetch('https://accounts.spotify.com/api/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+                    },
+                    body: 'grant_type=client_credentials'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('无法获取access token');
+                }
+                
+                const data = await response.json();
+                console.log('成功获取Spotify access token');
+                return data.access_token;
+            } catch (error) {
+                console.error('获取Spotify access token失败:', error);
+                return null;
+            }
+        }
+        
+        async function getSpotifyPlaylist(accessToken, playlistId) {
+            try {
+                const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`无法获取歌单: HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('成功获取歌单数据:', data);
+                return data;
+            } catch (error) {
+                console.error('获取Spotify歌单失败:', error);
+                return null;
+            }
+        }
+        
         async function renderAlbumWall() {
             const container = document.getElementById('album-wall');
             if (!container) return;
@@ -703,75 +751,127 @@
             `;
             
             const playlistId = '64kqgjsEoG93D7WToOVG6R';
-            const apis = [
-                `https://api.injahow.cn/meting/?type=playlist&id=${playlistId}&server=spotify`,
-                `https://meting-api.vercel.app/api?type=playlist&id=${playlistId}&server=spotify`,
-                `https://meting-api.173114.xyz/api?type=playlist&id=${playlistId}&server=spotify`
-            ];
-            
             let songs = null;
-            let lastError = null;
-            let rawResponse = null;
             
-            // 尝试多个API
-            for (const apiUrl of apis) {
-                try {
-                    console.log('尝试API:', apiUrl);
-                    const response = await fetch(apiUrl);
-                    console.log('响应状态:', response.status);
+            // 首先尝试使用真实的Spotify API
+            try {
+                console.log('尝试使用Spotify官方API...');
+                const accessToken = await getSpotifyAccessToken();
+                
+                if (accessToken) {
+                    const playlistData = await getSpotifyPlaylist(accessToken, playlistId);
                     
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
+                    if (playlistData && playlistData.tracks && playlistData.tracks.items) {
+                        songs = playlistData.tracks.items;
+                        console.log('成功从Spotify获取歌曲:', songs.length, '首');
                     }
-                    
-                    rawResponse = await response.json();
-                    console.log('获取到的原始数据:', rawResponse);
-                    
-                    // 尝试多种可能的数据格式
-                    if (Array.isArray(rawResponse)) {
-                        songs = rawResponse;
-                    } else if (rawResponse.data && Array.isArray(rawResponse.data)) {
-                        songs = rawResponse.data;
-                    } else if (rawResponse.list && Array.isArray(rawResponse.list)) {
-                        songs = rawResponse.list;
-                    } else if (rawResponse.result && Array.isArray(rawResponse.result)) {
-                        songs = rawResponse.result;
-                    } else if (rawResponse.playlist && rawResponse.playlist.tracks && Array.isArray(rawResponse.playlist.tracks)) {
-                        songs = rawResponse.playlist.tracks;
+                }
+            } catch (error) {
+                console.error('Spotify API失败:', error);
+            }
+            
+            // 如果Spotify API失败，尝试Meting API
+            if (!songs || songs.length === 0) {
+                console.log('Spotify API失败，尝试备用API...');
+                const apis = [
+                    `https://api.injahow.cn/meting/?type=playlist&id=${playlistId}&server=spotify`,
+                    `https://meting-api.vercel.app/api?type=playlist&id=${playlistId}&server=spotify`,
+                    `https://meting-api.173114.xyz/api?type=playlist&id=${playlistId}&server=spotify`
+                ];
+                
+                let lastError = null;
+                let rawResponse = null;
+                
+                // 尝试多个API
+                for (const apiUrl of apis) {
+                    try {
+                        console.log('尝试API:', apiUrl);
+                        const response = await fetch(apiUrl);
+                        console.log('响应状态:', response.status);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                        
+                        rawResponse = await response.json();
+                        console.log('获取到的原始数据:', rawResponse);
+                        
+                        // 尝试多种可能的数据格式
+                        if (Array.isArray(rawResponse)) {
+                            songs = rawResponse;
+                        } else if (rawResponse.data && Array.isArray(rawResponse.data)) {
+                            songs = rawResponse.data;
+                        } else if (rawResponse.list && Array.isArray(rawResponse.list)) {
+                            songs = rawResponse.list;
+                        } else if (rawResponse.result && Array.isArray(rawResponse.result)) {
+                            songs = rawResponse.result;
+                        } else if (rawResponse.playlist && rawResponse.playlist.tracks && Array.isArray(rawResponse.playlist.tracks)) {
+                            songs = rawResponse.playlist.tracks;
+                        }
+                        
+                        console.log('解析后的歌曲数据:', songs);
+                        
+                        if (songs && songs.length > 0) {
+                            console.log('API成功:', apiUrl);
+                            break;
+                        }
+                    } catch (error) {
+                        lastError = error;
+                        console.error('API失败:', apiUrl, error);
                     }
-                    
-                    console.log('解析后的歌曲数据:', songs);
-                    
-                    if (songs && songs.length > 0) {
-                        console.log('API成功:', apiUrl);
-                        break;
-                    }
-                } catch (error) {
-                    lastError = error;
-                    console.error('API失败:', apiUrl, error);
                 }
             }
             
             try {
                 if (!songs || !Array.isArray(songs) || songs.length === 0) {
-                    throw new Error(lastError ? `所有API都失败了: ${lastError.message}` : '未获取到歌曲数据');
+                    throw new Error('未获取到歌曲数据');
                 }
                 
                 // 提取专辑信息并去重
                 const albumMap = new Map();
-                songs.forEach(song => {
-                    console.log('处理歌曲:', song);
+                songs.forEach(item => {
+                    console.log('处理歌曲项:', item);
+                    
+                    // 检查数据格式（Spotify API返回的是track对象）
+                    let song = item;
+                    if (item.track) {
+                        song = item.track;
+                    }
+                    
+                    if (!song) return;
                     
                     // 尝试多种字段名
-                    const albumName = song.album || song.album_name || song.albumName;
-                    const artistName = song.artist || song.artist_name || song.artistName || song.name;
-                    const cover = song.pic || song.cover || song.image || song.pic_url || song.coverImage || song.albumArt;
+                    let albumName = null;
+                    let artistName = null;
+                    let cover = null;
+                    let releaseYear = null;
+                    
+                    // Spotify API格式
+                    if (song.album) {
+                        albumName = song.album.name;
+                        if (song.album.images && song.album.images.length > 0) {
+                            // 使用最大的图片
+                            cover = song.album.images[0].url;
+                        }
+                        if (song.album.release_date) {
+                            releaseYear = song.album.release_date.substring(0, 4);
+                        }
+                    }
+                    if (song.artists && song.artists.length > 0) {
+                        artistName = song.artists.map(a => a.name).join(', ');
+                    }
+                    
+                    // Meting API格式
+                    if (!albumName) albumName = song.album || song.album_name || song.albumName;
+                    if (!artistName) artistName = song.artist || song.artist_name || song.artistName || song.name;
+                    if (!cover) cover = song.pic || song.cover || song.image || song.pic_url || song.coverImage || song.albumArt;
                     
                     if (cover && albumName && !albumMap.has(albumName)) {
                         albumMap.set(albumName, {
                             title: albumName,
                             artist: artistName,
-                            cover: cover
+                            cover: cover,
+                            year: releaseYear
                         });
                     }
                 });
@@ -785,7 +885,7 @@
                 
                 // 渲染专辑墙
                 container.innerHTML = albumList.map((album, index) => `
-                    <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}')">
+                    <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}${album.year ? '\\n年份: ' + album.year : ''}')">
                         <div class="album-record"></div>
                         <div class="album-card-inner">
                             <div class="album-front">
@@ -794,7 +894,7 @@
                             <div class="album-back">
                                 <div class="album-title">${album.title}</div>
                                 <div class="album-artist">${album.artist}</div>
-                                <div class="album-year">Spotify</div>
+                                <div class="album-year">${album.year || 'Spotify'}</div>
                             </div>
                         </div>
                     </div>
