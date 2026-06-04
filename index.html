@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人博客</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Markdown 样式 */
+        .markdown-content h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+        .markdown-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        .markdown-content p {
+            margin-bottom: 1rem;
+            color: #4b5563;
+            line-height: 1.75;
+        }
+        .markdown-content ul, .markdown-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        .markdown-content code {
+            background-color: #f3f4f6;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+        .markdown-content pre {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin-left: 0;
+            margin-bottom: 1rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        .markdown-content th, .markdown-content td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            text-align: left;
+        }
+        .markdown-content th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .markdown-content strong {
+            font-weight: 700;
+            color: #1f2937;
+        }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #FFF5EB;
+            min-height: 100vh;
+            padding-top: 52px;
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            opacity: 0.8;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dialog-with-arrow {
+            position: relative;
+        }
+        
+        .dialog-with-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 16px solid transparent;
+            border-right: 16px solid transparent;
+            border-top: 16px solid #FFFFFF;
+        }
+        
+        .dialog-with-arrow::before {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 17px solid transparent;
+            border-right: 17px solid transparent;
+            border-top: 17px solid #D1D5DB;
+            z-index: -1;
+        }
+        
+        .mac-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .mac-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .mac-dot-red {
+            background-color: #FF5F56;
+        }
+        
+        .mac-dot-yellow {
+            background-color: #FFBD2E;
+        }
+        
+        .mac-dot-green {
+            background-color: #27C93F;
+        }
+        
+        .article-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .article-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar {
+            display: block !important;
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .sidebar-toggle {
+            display: none;
+        }
+        
+        @media (max-width: 767px) {
+            .hamburger {
+                display: block;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-white border border-gray-300 rounded-none px-6 py-3 flex justify-center items-center gap-8 flex-wrap">
+        <div class="nav-item text-gray-800" onclick="showPage('home')">首页</div>
+        <div class="nav-item text-gray-800" onclick="showPage('articles')">文章</div>
+        <div class="nav-item text-gray-800" onclick="showPage('music')">音乐墙</div>
+        <div class="nav-item text-gray-800" onclick="showPage('about-music')">关于无界音乐</div>
+        <div class="nav-item text-gray-800" onclick="showPage('about-me')">关于我</div>
+    </nav>
+
+    <div id="home" class="page active">
+        <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+            <div class="w-full md:w-64 flex-shrink-0 sidebar">
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                    <img src="https://wx1.sinaimg.cn/mw690/006BWgJtly1ibe87nzfimj31900u0tcy.jpg" class="w-24 h-24 rounded-full mb-4 object-cover" alt="头像">
+                    <div class="text-lg font-semibold text-gray-800 mb-8">Irving Wise</div>
+                    <div class="text-gray-600">简介</div>
+                </div>
+            </div>
+            <div class="flex-1 flex items-center justify-center min-h-[400px]">
+                <div class="dialog-with-arrow bg-white border border-gray-300 rounded-lg p-8 text-center max-w-md">
+                    <div class="text-2xl font-bold text-gray-800 mb-2">欢迎来到我的博客</div>
+                    <div class="text-xl text-gray-800 mb-2">这是个首页</div>
+                    <div class="text-xl text-gray-800 mb-2">啥也没有</div>
+                    <div class="text-xl text-gray-800">点菜单看看吧</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="articles" class="page">
+        <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+            <div class="w-full md:w-64 flex-shrink-0 sidebar">
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                    <img src="https://wx1.sinaimg.cn/mw690/006BWgJtly1ibe87nzfimj31900u0tcy.jpg" class="w-24 h-24 rounded-full mb-4 object-cover" alt="头像">
+                    <div class="text-lg font-semibold text-gray-800 mb-8">Irving Wise</div>
+                    <div class="text-gray-600">简介</div>
+                </div>
+            </div>
+            <div class="flex-1 space-y-6">
+                <!-- 文章列表通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <div id="article-detail" class="page">
+        <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+            <div class="w-full md:w-64 flex-shrink-0 sidebar">
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                    <img src="https://wx1.sinaimg.cn/mw690/006BWgJtly1ibe87nzfimj31900u0tcy.jpg" class="w-24 h-24 rounded-full mb-4 object-cover" alt="头像">
+                    <div class="text-lg font-semibold text-gray-800 mb-8">Irving Wise</div>
+                    <div class="text-gray-600">简介</div>
+                </div>
+                <div class="bg-white border border-gray-300 rounded-lg p-4 mt-6">
+                    <div class="text-lg font-semibold text-gray-800 mb-4">最近更新</div>
+                    <div class="space-y-3">
+                        <!-- 最近更新文章通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="bg-white border border-gray-300 rounded-lg p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div></div>
+                        <div class="mac-dots">
+                            <div class="mac-dot mac-dot-red"></div>
+                            <div class="mac-dot mac-dot-yellow"></div>
+                            <div class="mac-dot mac-dot-green"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="text-xl font-semibold text-gray-800">欢迎使用 MarkdownPro</div>
+                        <div class="text-gray-500">2026-06-04</div>
+                    </div>
+                    <img src="https://picsum.photos/seed/markdownpro/800/400" class="w-full h-48 md:h-64 object-cover rounded mb-6" alt="封面图">
+                    <div id="article-content" class="markdown-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="music" class="page">
+        <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+            <div class="w-full md:w-64 flex-shrink-0 sidebar">
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                    <img src="https://wx1.sinaimg.cn/mw690/006BWgJtly1ibe87nzfimj31900u0tcy.jpg" class="w-24 h-24 rounded-full mb-4 object-cover" alt="头像">
+                    <div class="text-lg font-semibold text-gray-800 mb-8">Irving Wise</div>
+                    <div class="text-gray-600">简介</div>
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="bg-white border border-gray-300 rounded-lg p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div></div>
+                        <div class="mac-dots">
+                            <div class="mac-dot mac-dot-red"></div>
+                            <div class="mac-dot mac-dot-yellow"></div>
+                            <div class="mac-dot mac-dot-green"></div>
+                        </div>
+                    </div>
+                    <div class="text-gray-600">音乐墙</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-music" class="page">
+        <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+            <div class="w-full md:w-64 flex-shrink-0 sidebar">
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                    <img src="https://wx1.sinaimg.cn/mw690/006BWgJtly1ibe87nzfimj31900u0tcy.jpg" class="w-24 h-24 rounded-full mb-4 object-cover" alt="头像">
+                    <div class="text-lg font-semibold text-gray-800 mb-8">Irving Wise</div>
+                    <div class="text-gray-600">简介</div>
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="bg-white border border-gray-300 rounded-lg p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div></div>
+                        <div class="mac-dots">
+                            <div class="mac-dot mac-dot-red"></div>
+                            <div class="mac-dot mac-dot-yellow"></div>
+                            <div class="mac-dot mac-dot-green"></div>
+                        </div>
+                    </div>
+                    <div class="text-gray-600">关于无界音乐</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-me" class="page">
+        <div class="p-4 md:p-8">
+            <div class="bg-white border border-gray-300 rounded-lg p-8 md:p-12 min-h-[500px] flex flex-col justify-center">
+                <div class="flex justify-end mb-8">
+                    <div class="mac-dots">
+                        <div class="mac-dot mac-dot-red"></div>
+                        <div class="mac-dot mac-dot-yellow"></div>
+                        <div class="mac-dot mac-dot-green"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+                        <div>如果你认为我有些怪</div>
+                        <div>那是因为我太真实</div>
+                    </div>
+                    <div class="text-lg text-gray-600">
+                        <div>目前马上中考，喜欢编程，喜欢鼓秋跟科技有关的东西</div>
+                        <div>从小到大一直想考清华姚班的呼伦贝尔小孩</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const articles = [
+            {
+                id: 1,
+                title: '欢迎使用 MarkdownPro',
+                date: '2026-06-04',
+                summary: '功能特点：实时预览、语法高亮、多种导出、响应式设计、多语言支持',
+                imageSeed: 'markdownpro',
+                content: `# 欢迎使用 MarkdownPro
+
+## 功能特点
+
+- **实时预览**: 支持实时Markdown预览
+- **语法高亮**: 完整的语法高亮支持
+- **多种导出**: 支持HTML等格式导出
+- **响应式设计**: 完美适配各种设备
+- **多语言支持**: 中英文界面切换
+
+## 快速开始
+
+开始编写您的Markdown文档吧！
+
+\`\`\`javascript
+console.log("Hello MarkdownPro!");
+\`\`\`
+
+> 这是一个引用示例
+
+### 列表示例
+
+1. 有序列表项1
+2. 有序列表项2
+3. 有序列表项3
+
+- 无序列表项A
+- 无序列表项B
+- 无序列表项C
+
+### 表格示例
+
+| 功能 | 状态 | 说明 |
+|------|------|------|
+| 实时预览 | ✅ | 已完成 |
+| 语法高亮 | ✅ | 已完成 |
+| 导出功能 | ✅ | 已完成 |
+
+**祝您使用愉快！**
+`
+            },
+            {
+                id: 2,
+                title: 'Web开发入门指南',
+                date: '2026-06-03',
+                summary: '从HTML、CSS到JavaScript，全面了解Web开发基础知识',
+                imageSeed: 'webdev',
+                content: `# Web开发入门指南
+
+## 什么是Web开发？
+
+Web开发是创建网站和Web应用的过程，主要包括前端开发和后端开发。
+
+## 前端三件套
+
+### HTML
+HTML是网页的骨架，定义了网页的结构。
+
+\`\`\`html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的第一个网页</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+</body>
+</html>
+\`\`\`
+
+### CSS
+CSS负责网页的样式，让网页变得美观。
+
+### JavaScript
+JavaScript为网页添加交互功能。
+
+## 学习建议
+
+> 实践是最好的老师！
+
+1. 先学习HTML基础
+2. 然后掌握CSS布局
+3. 最后学习JavaScript
+4. 动手做项目
+
+**加油！**
+`
+            },
+            {
+                id: 3,
+                title: '编程学习心得',
+                date: '2026-06-02',
+                summary: '分享我从零开始学习编程的经历和心得体会',
+                imageSeed: 'coding',
+                content: `# 编程学习心得
+
+## 我的编程之路
+
+从小就对计算机感兴趣，中考结束后终于有时间系统学习编程了。
+
+## 学习方法
+
+### 1. 理论与实践结合
+- 看书学习基础知识
+- 立即动手写代码
+- 通过项目巩固技能
+
+### 2. 善于利用资源
+- 在线教程
+- 开源项目
+- 技术社区
+
+### 3. 保持耐心
+\`\`\`
+编程中遇到bug是正常的，
+关键是要学会调试和解决问题。
+\`\`\`
+
+## 目标
+
+我的梦想是考入清华姚班，从事计算机科学研究。
+
+| 阶段 | 目标 | 状态 |
+|------|------|------|
+| 中考 | 取得好成绩 | 进行中 |
+| 高中 | 夯实基础 | 待开始 |
+| 大学 | 清华姚班 | 目标 |
+
+**千里之行，始于足下！**
+`
+            },
+            {
+                id: 4,
+                title: 'Linux基础命令',
+                date: '2026-06-01',
+                summary: '常用Linux命令介绍，让你快速上手命令行操作',
+                imageSeed: 'linux',
+                content: `# Linux基础命令
+
+## 为什么学Linux？
+
+Linux是开源操作系统，在服务器领域占有重要地位。
+
+## 常用命令
+
+### 文件操作
+- \`ls\` - 列出文件
+- \`cd\` - 切换目录
+- \`pwd\` - 显示当前路径
+
+### 文件编辑
+\`\`\`bash
+# 创建文件
+touch hello.txt
+
+# 编辑文件
+nano hello.txt
+\`\`\`
+
+### 系统信息
+- \`whoami\` - 当前用户
+- \`uname -a\` - 系统信息
+
+## 小贴士
+
+> Tab键可以自动补全命令和文件名！
+
+1. 多练习才能熟练
+2. 善用man手册
+3. 做好命令笔记
+
+**命令行很酷，不是吗？**
+`
+            }
+        ];
+
+        // 当前显示的文章ID
+        let currentArticleId = 1;
+
+        function showPage(pageId, articleId = null) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.remove('active');
+            }
+            
+            // 渲染文章列表页
+            if (pageId === 'articles') {
+                renderArticlesList();
+            }
+            
+            // 渲染文章详情页
+            if (pageId === 'article-detail') {
+                if (articleId) {
+                    currentArticleId = articleId;
+                }
+                renderArticleDetail(currentArticleId);
+                renderRecentArticles();
+            }
+        }
+
+        function renderArticleDetail(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) {
+                console.error('找不到文章:', articleId);
+                return;
+            }
+            
+            // 更新标题和日期
+            const titleEl = document.querySelector('#article-detail .text-xl.font-semibold');
+            const dateEl = document.querySelector('#article-detail .text-gray-500');
+            if (titleEl) titleEl.textContent = article.title;
+            if (dateEl) dateEl.textContent = article.date;
+            
+            // 更新封面图
+            const coverImg = document.querySelector('#article-detail img');
+            if (coverImg) {
+                coverImg.src = `https://picsum.photos/seed/${article.imageSeed}/800/400`;
+            }
+            
+            // 渲染文章内容
+            const contentDiv = document.getElementById('article-content');
+            if (contentDiv && typeof marked !== 'undefined') {
+                contentDiv.innerHTML = marked.parse(article.content);
+            }
+        }
+
+        function renderArticlesList() {
+            const container = document.querySelector('#articles .space-y-6');
+            if (!container) {
+                console.error('无法找到文章列表容器');
+                return;
+            }
+            container.innerHTML = articles.map(article => `
+                <div class="article-card bg-white border border-gray-300 rounded-lg p-6" onclick="showPage('article-detail', ${article.id})">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="mac-dots">
+                            <div class="mac-dot mac-dot-red"></div>
+                            <div class="mac-dot mac-dot-yellow"></div>
+                            <div class="mac-dot mac-dot-green"></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="text-lg font-semibold text-gray-800">${article.title}</div>
+                                <div class="text-sm text-gray-500">${article.date}</div>
+                            </div>
+                            <div class="text-gray-600">${article.summary}</div>
+                        </div>
+                        <img src="https://picsum.photos/seed/${article.imageSeed}/128/96" class="w-32 h-24 object-cover rounded" alt="封面图">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecentArticles() {
+            const container = document.querySelector('#article-detail .space-y-3');
+            if (!container) {
+                console.error('无法找到最近更新容器');
+                return;
+            }
+            const recentArticles = articles.slice(0, 3);
+            container.innerHTML = recentArticles.map(article => `
+                <div class="cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" onclick="showPage('article-detail', ${article.id})">
+                    <div class="text-gray-800 font-medium">${article.title}</div>
+                    <div class="text-sm text-gray-500">${article.date}</div>
+                </div>
+            `).join('');
+        }
+        
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('active');
+            }
+        });
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 渲染文章列表
+            renderArticlesList();
+            // 渲染最近更新
+            renderRecentArticles();
+            // 如果当前在文章详情页，渲染内容
+            const activePage = document.querySelector('.page.active');
+            if (activePage && activePage.id === 'article-detail') {
+                renderArticleDetail(currentArticleId);
+            }
+        });
+    </script>
+</body>
+</html>
