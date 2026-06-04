@@ -581,112 +581,112 @@
                 title: "Midnights",
                 artist: "Taylor Swift",
                 year: 2022,
-                imageSeed: "midnights"
+                cover: "https://i.scdn.co/image/ab67616d0000b27321da42e14c95603fdd4e4c65"
             },
             {
                 id: 2,
                 title: "Utopia",
                 artist: "Travis Scott",
                 year: 2023,
-                imageSeed: "utopia"
+                cover: "https://i.scdn.co/image/ab67616d0000b27343d82b29cd7b85b0306b5b78"
             },
             {
                 id: 3,
                 title: "Starboy",
                 artist: "The Weeknd",
                 year: 2016,
-                imageSeed: "starboy"
+                cover: "https://i.scdn.co/image/ab67616d0000b2733e084b9e2f0c8d89e884e928"
             },
             {
                 id: 4,
                 title: "After Hours",
                 artist: "The Weeknd",
                 year: 2020,
-                imageSeed: "afterhours"
+                cover: "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36"
             },
             {
                 id: 5,
                 title: "Blonde",
                 artist: "Frank Ocean",
                 year: 2016,
-                imageSeed: "blonde"
+                cover: "https://i.scdn.co/image/ab67616d0000b273e960579a0e42805ffc5950a5"
             },
             {
                 id: 6,
                 title: "DAMN.",
                 artist: "Kendrick Lamar",
                 year: 2017,
-                imageSeed: "damn"
+                cover: "https://i.scdn.co/image/ab67616d0000b2734e1073a6ccb9404e7b0b6862"
             },
             {
                 id: 7,
                 title: "good kid, m.A.A.d city",
                 artist: "Kendrick Lamar",
                 year: 2012,
-                imageSeed: "gkmc"
+                cover: "https://i.scdn.co/image/ab67616d0000b2733c661ef59c1462a491e6063d"
             },
             {
                 id: 8,
                 title: "My Beautiful Dark Twisted Fantasy",
                 artist: "Kanye West",
                 year: 2010,
-                imageSeed: "mbdtf"
+                cover: "https://i.scdn.co/image/ab67616d0000b2734e86e63193146874d310640a"
             },
             {
                 id: 9,
                 title: "Graduation",
                 artist: "Kanye West",
                 year: 2007,
-                imageSeed: "graduation"
+                cover: "https://i.scdn.co/image/ab67616d0000b273f062be23a7a4752c73311a2b"
             },
             {
                 id: 10,
                 title: "Chromatica",
                 artist: "Lady Gaga",
                 year: 2020,
-                imageSeed: "chromatica"
+                cover: "https://i.scdn.co/image/ab67616d0000b2732ce6c22e548b0b191808695c"
             },
             {
                 id: 11,
                 title: "Future Nostalgia",
                 artist: "Dua Lipa",
                 year: 2020,
-                imageSeed: "future"
+                cover: "https://i.scdn.co/image/ab67616d0000b273b2a5e9e7d5b509f24f309ee7"
             },
             {
                 id: 12,
                 title: "Fine Line",
                 artist: "Harry Styles",
                 year: 2019,
-                imageSeed: "fineline"
+                cover: "https://i.scdn.co/image/ab67616d0000b27350e616f9c79607337280134b"
             },
             {
                 id: 13,
                 title: "Justice",
                 artist: "Justin Bieber",
                 year: 2021,
-                imageSeed: "justice"
+                cover: "https://i.scdn.co/image/ab67616d0000b2737d7a24903869e0440f663612"
             },
             {
                 id: 14,
                 title: "SOUR",
                 artist: "Olivia Rodrigo",
                 year: 2021,
-                imageSeed: "sour"
+                cover: "https://i.scdn.co/image/ab67616d0000b273e421d90e4de6be28e76361bc"
             },
             {
                 id: 15,
                 title: "Planet Her",
                 artist: "Doja Cat",
                 year: 2021,
-                imageSeed: "planether"
+                cover: "https://i.scdn.co/image/ab67616d0000b273865e9a610c80e419a6679645"
             },
             {
                 id: 16,
                 title: "Happier Than Ever",
                 artist: "Billie Eilish",
                 year: 2021,
-                imageSeed: "happier"
+                cover: "https://i.scdn.co/image/ab67616d0000b2735578cf872412e79e187d5d0e"
             }
         ];
         
@@ -711,6 +711,7 @@
             
             let songs = null;
             let lastError = null;
+            let rawResponse = null;
             
             // 尝试多个API
             for (const apiUrl of apis) {
@@ -723,8 +724,23 @@
                         throw new Error(`HTTP ${response.status}`);
                     }
                     
-                    songs = await response.json();
-                    console.log('获取到的歌曲数据:', songs);
+                    rawResponse = await response.json();
+                    console.log('获取到的原始数据:', rawResponse);
+                    
+                    // 尝试多种可能的数据格式
+                    if (Array.isArray(rawResponse)) {
+                        songs = rawResponse;
+                    } else if (rawResponse.data && Array.isArray(rawResponse.data)) {
+                        songs = rawResponse.data;
+                    } else if (rawResponse.list && Array.isArray(rawResponse.list)) {
+                        songs = rawResponse.list;
+                    } else if (rawResponse.result && Array.isArray(rawResponse.result)) {
+                        songs = rawResponse.result;
+                    } else if (rawResponse.playlist && rawResponse.playlist.tracks && Array.isArray(rawResponse.playlist.tracks)) {
+                        songs = rawResponse.playlist.tracks;
+                    }
+                    
+                    console.log('解析后的歌曲数据:', songs);
                     
                     if (songs && songs.length > 0) {
                         console.log('API成功:', apiUrl);
@@ -737,7 +753,7 @@
             }
             
             try {
-                if (!songs || songs.length === 0) {
+                if (!songs || !Array.isArray(songs) || songs.length === 0) {
                     throw new Error(lastError ? `所有API都失败了: ${lastError.message}` : '未获取到歌曲数据');
                 }
                 
@@ -745,11 +761,16 @@
                 const albumMap = new Map();
                 songs.forEach(song => {
                     console.log('处理歌曲:', song);
-                    const cover = song.pic || song.cover || song.image;
-                    if (cover && !albumMap.has(song.album)) {
-                        albumMap.set(song.album, {
-                            title: song.album,
-                            artist: song.artist || song.name,
+                    
+                    // 尝试多种字段名
+                    const albumName = song.album || song.album_name || song.albumName;
+                    const artistName = song.artist || song.artist_name || song.artistName || song.name;
+                    const cover = song.pic || song.cover || song.image || song.pic_url || song.coverImage || song.albumArt;
+                    
+                    if (cover && albumName && !albumMap.has(albumName)) {
+                        albumMap.set(albumName, {
+                            title: albumName,
+                            artist: artistName,
                             cover: cover
                         });
                     }
@@ -781,32 +802,23 @@
                 
             } catch (error) {
                 console.error('加载歌单失败:', error);
-                // 显示错误信息
-                container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-20 text-center">
-                        <div class="text-red-500 text-lg mb-4">加载失败</div>
-                        <div class="text-gray-500 text-sm mb-4">${error.message}</div>
-                        <div class="text-gray-400 text-xs">使用备用数据...</div>
-                    </div>
-                `;
-                // 延迟显示备用数据
-                setTimeout(() => {
-                    container.innerHTML = albums.map(album => `
-                        <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}\\n年份: ${album.year}')">
-                            <div class="album-record"></div>
-                            <div class="album-card-inner">
-                                <div class="album-front">
-                                    <img src="https://picsum.photos/seed/${album.imageSeed}/400/400" alt="${album.title}">
-                                </div>
-                                <div class="album-back">
-                                    <div class="album-title">${album.title}</div>
-                                    <div class="album-artist">${album.artist}</div>
-                                    <div class="album-year">${album.year}</div>
-                                </div>
+                console.log('使用备用专辑数据');
+                // 直接使用备用的真实专辑数据
+                container.innerHTML = albums.map(album => `
+                    <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}\\n年份: ${album.year}')">
+                        <div class="album-record"></div>
+                        <div class="album-card-inner">
+                            <div class="album-front">
+                                <img src="${album.cover}" alt="${album.title}" loading="lazy">
+                            </div>
+                            <div class="album-back">
+                                <div class="album-title">${album.title}</div>
+                                <div class="album-artist">${album.artist}</div>
+                                <div class="album-year">${album.year}</div>
                             </div>
                         </div>
-                    `).join('');
-                }, 1500);
+                    </div>
+                `).join('');
             }
         }
         
@@ -1097,15 +1109,10 @@ nano hello.txt
             `).join('');
         }
         
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('active');
-            }
-        });
-        
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面已加载完成');
+            
             // 渲染文章列表
             renderArticlesList();
             // 渲染最近更新
@@ -1115,18 +1122,35 @@ nano hello.txt
             if (activePage && activePage.id === 'article-detail') {
                 renderArticleDetail(currentArticleId);
             }
-        });
-        
-        // 按ESC键关闭模态框
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeAvatarModal();
+            
+            // 汉堡菜单事件
+            const hamburger = document.querySelector('.hamburger');
+            if (hamburger) {
+                hamburger.addEventListener('click', function() {
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar) {
+                        sidebar.classList.toggle('active');
+                    }
+                });
             }
-        });
-        
-        // 防止点击图片时关闭模态框
-        document.getElementById('avatar-modal').querySelector('img').addEventListener('click', function(e) {
-            e.stopPropagation();
+            
+            // 防止点击图片时关闭模态框
+            const avatarModal = document.getElementById('avatar-modal');
+            if (avatarModal) {
+                const modalImg = avatarModal.querySelector('img');
+                if (modalImg) {
+                    modalImg.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                    });
+                }
+            }
+            
+            // 按ESC键关闭模态框
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeAvatarModal();
+                }
+            });
         });
     </script>
 </body>
