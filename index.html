@@ -690,25 +690,82 @@
             }
         ];
         
-        function renderAlbumWall() {
+        async function renderAlbumWall() {
             const container = document.getElementById('album-wall');
             if (!container) return;
             
-            container.innerHTML = albums.map(album => `
-                <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}\\n年份: ${album.year}')">
-                    <div class="album-record"></div>
-                    <div class="album-card-inner">
-                        <div class="album-front">
-                            <img src="https://picsum.photos/seed/${album.imageSeed}/400/400" alt="${album.title}">
-                        </div>
-                        <div class="album-back">
-                            <div class="album-title">${album.title}</div>
-                            <div class="album-artist">${album.artist}</div>
-                            <div class="album-year">${album.year}</div>
+            // 显示加载状态
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-20">
+                    <div class="w-12 h-12 border-4 border-gray-300 border-t-purple-500 rounded-full animate-spin mb-4"></div>
+                    <p class="text-gray-500">正在加载歌单...</p>
+                </div>
+            `;
+            
+            try {
+                // 使用Meting API获取Spotify歌单
+                const playlistId = '64kqgjsEoG93D7WToOVG6R';
+                const response = await fetch(`https://api.injahow.cn/meting/?type=playlist&id=${playlistId}&server=spotify`);
+                const songs = await response.json();
+                
+                if (!songs || songs.length === 0) {
+                    throw new Error('未获取到歌曲数据');
+                }
+                
+                // 提取专辑信息并去重
+                const albumMap = new Map();
+                songs.forEach(song => {
+                    if (song.pic && !albumMap.has(song.album)) {
+                        albumMap.set(song.album, {
+                            title: song.album,
+                            artist: song.artist,
+                            cover: song.pic
+                        });
+                    }
+                });
+                
+                const albumList = Array.from(albumMap.values());
+                
+                if (albumList.length === 0) {
+                    throw new Error('未找到专辑封面');
+                }
+                
+                // 渲染专辑墙
+                container.innerHTML = albumList.map((album, index) => `
+                    <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}')">
+                        <div class="album-record"></div>
+                        <div class="album-card-inner">
+                            <div class="album-front">
+                                <img src="${album.cover}" alt="${album.title}" loading="lazy">
+                            </div>
+                            <div class="album-back">
+                                <div class="album-title">${album.title}</div>
+                                <div class="album-artist">${album.artist}</div>
+                                <div class="album-year">Spotify</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+                
+            } catch (error) {
+                console.error('加载歌单失败:', error);
+                // 如果API失败，使用模拟数据
+                container.innerHTML = albums.map(album => `
+                    <div class="album-card" onclick="alert('专辑: ${album.title}\\n艺人: ${album.artist}\\n年份: ${album.year}')">
+                        <div class="album-record"></div>
+                        <div class="album-card-inner">
+                            <div class="album-front">
+                                <img src="https://picsum.photos/seed/${album.imageSeed}/400/400" alt="${album.title}">
+                            </div>
+                            <div class="album-back">
+                                <div class="album-title">${album.title}</div>
+                                <div class="album-artist">${album.artist}</div>
+                                <div class="album-year">${album.year}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
         
         const articles = [
