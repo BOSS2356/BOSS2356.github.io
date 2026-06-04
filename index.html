@@ -771,6 +771,7 @@
             }
             
             // 如果Spotify API失败，尝试Meting API
+            let lastError = null;
             if (!songs || songs.length === 0) {
                 console.log('Spotify API失败，尝试备用API...');
                 const apis = [
@@ -779,7 +780,6 @@
                     `https://meting-api.173114.xyz/api?type=playlist&id=${playlistId}&server=spotify`
                 ];
                 
-                let lastError = null;
                 let rawResponse = null;
                 
                 // 尝试多个API
@@ -824,7 +824,7 @@
             
             try {
                 if (!songs || !Array.isArray(songs) || songs.length === 0) {
-                    throw new Error('未获取到歌曲数据');
+                    throw new Error(lastError ? `所有API都失败了: ${lastError.message}` : '未获取到歌曲数据');
                 }
                 
                 // 提取专辑信息并去重
