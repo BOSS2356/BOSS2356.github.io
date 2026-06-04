@@ -296,10 +296,10 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-center mb-4">
-                        <div class="text-xl font-semibold text-gray-800">欢迎使用 MarkdownPro</div>
-                        <div class="text-gray-500">2026-06-04</div>
+                        <div id="article-title" class="text-xl font-semibold text-gray-800">欢迎使用 MarkdownPro</div>
+                        <div id="article-date" class="text-gray-500">2026-06-04</div>
                     </div>
-                    <img src="https://picsum.photos/seed/markdownpro/800/400" class="w-full h-48 md:h-64 object-cover rounded mb-6" alt="封面图">
+                    <img id="article-cover" src="https://picsum.photos/seed/markdownpro/800/400" class="w-full h-48 md:h-64 object-cover rounded mb-6" alt="封面图">
                     <div id="article-content" class="markdown-content"></div>
                 </div>
             </div>
@@ -601,13 +601,13 @@ nano hello.txt
             }
             
             // 更新标题和日期
-            const titleEl = document.querySelector('#article-detail .text-xl.font-semibold');
-            const dateEl = document.querySelector('#article-detail .text-gray-500');
+            const titleEl = document.getElementById('article-title');
+            const dateEl = document.getElementById('article-date');
             if (titleEl) titleEl.textContent = article.title;
             if (dateEl) dateEl.textContent = article.date;
             
             // 更新封面图
-            const coverImg = document.querySelector('#article-detail img');
+            const coverImg = document.getElementById('article-cover');
             if (coverImg) {
                 coverImg.src = `https://picsum.photos/seed/${article.imageSeed}/800/400`;
             }
