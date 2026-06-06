@@ -121,11 +121,14 @@
         
         .page {
             display: none;
-            animation: fadeIn 0.3s ease;
         }
         
         .page.active {
             display: block;
+        }
+        
+        .page.active.with-animation {
+            animation: fadeIn 0.3s ease;
         }
         
         @keyframes fadeIn {
@@ -277,6 +280,7 @@
     <nav class="bg-white border border-gray-300 rounded-none px-6 py-3 flex justify-center items-center gap-8 flex-wrap">
         <div class="nav-item text-gray-800" onclick="showPage('home')">首页</div>
         <div class="nav-item text-gray-800" onclick="showPage('articles')">文章</div>
+        <div class="nav-item text-gray-800" onclick="showPage('categories')">分类</div>
         <div class="nav-item text-gray-800" onclick="showPage('about-music')">关于无界音乐</div>
         <div class="nav-item text-gray-800" onclick="showPage('about-me')">关于我</div>
     </nav>
@@ -420,6 +424,59 @@
         </div>
     </div>
 
+    <div id="categories" class="page">
+        <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+            <div class="w-full md:w-64 flex-shrink-0 sidebar">
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                    <img src="007YgrxXgy1id9q7sonlwj31sq28xb2a.jpg" class="w-48 h-48 rounded-full mb-4 object-cover avatar-clickable" onclick="openAvatarModal()" alt="头像">
+                    <div class="text-lg font-semibold text-gray-800 mb-4">Irving Wise</div>
+                    <div class="text-gray-800 font-bold mb-6 text-center">咕咕嘎嘎，我要玩热血航线！</div>
+                    <div class="flex flex-col gap-3 w-full">
+                        <button class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200" onclick="showPage('awards')">获奖经历</button>
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all duration-200" onclick="showPage('home')">简介</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 space-y-6">
+                <div id="categories-list-view" class="bg-white border border-gray-300 rounded-lg p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div></div>
+                        <div class="mac-dots">
+                            <div class="mac-dot mac-dot-red"></div>
+                            <div class="mac-dot mac-dot-yellow"></div>
+                            <div class="mac-dot mac-dot-green"></div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">📂 文章分类</h2>
+                    </div>
+                    <div id="categories-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- 分类列表通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                <div id="category-articles-view" class="bg-white border border-gray-300 rounded-lg p-6 hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div></div>
+                        <div class="mac-dots">
+                            <div class="mac-dot mac-dot-red"></div>
+                            <div class="mac-dot mac-dot-yellow"></div>
+                            <div class="mac-dot mac-dot-green"></div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <button class="text-gray-600 hover:text-gray-800 font-medium mb-4 flex items-center gap-2" onclick="showCategoriesList()">
+                            ← 返回分类列表
+                        </button>
+                        <h2 id="category-title" class="text-2xl font-bold text-gray-800"></h2>
+                    </div>
+                    <div id="category-articles" class="space-y-4">
+                        <!-- 分类文章列表通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="about-music" class="page">
         <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
             <div class="w-full md:w-64 flex-shrink-0 sidebar">
@@ -495,6 +552,7 @@
                 date: '2026-06-04',
                 summary: '功能特点：实时预览、语法高亮、多种导出、响应式设计、多语言支持',
                 imageSeed: 'markdownpro',
+                category: '技术',
                 content: `# 欢迎使用 MarkdownPro
 
 ## 功能特点
@@ -542,6 +600,7 @@ console.log("Hello MarkdownPro!");
                 date: '2026-06-03',
                 summary: '从HTML、CSS到JavaScript，全面了解Web开发基础知识',
                 imageSeed: 'webdev',
+                category: '技术',
                 content: `# Web开发入门指南
 
 ## 什么是Web开发？
@@ -589,6 +648,7 @@ JavaScript为网页添加交互功能。
                 date: '2026-06-02',
                 summary: '分享我从零开始学习编程的经历和心得体会',
                 imageSeed: 'coding',
+                category: '随谈',
                 content: `# 编程学习心得
 
 ## 我的编程之路
@@ -632,6 +692,7 @@ JavaScript为网页添加交互功能。
                 date: '2026-06-01',
                 summary: '常用Linux命令介绍，让你快速上手命令行操作',
                 imageSeed: 'linux',
+                category: '技术',
                 content: `# Linux基础命令
 
 ## 为什么学Linux？
@@ -671,14 +732,41 @@ nano hello.txt
             }
         ];
 
+        // 分类数据
+        const categories = [
+            { id: 1, name: '技术', icon: '💻', color: 'from-blue-50 to-indigo-50', borderColor: 'border-blue-500', tagBg: 'bg-blue-100', tagText: 'text-blue-800' },
+            { id: 2, name: '日常', icon: '🏠', color: 'from-green-50 to-emerald-50', borderColor: 'border-green-500', tagBg: 'bg-green-100', tagText: 'text-green-800' },
+            { id: 3, name: '随谈', icon: '📝', color: 'from-purple-50 to-pink-50', borderColor: 'border-purple-500', tagBg: 'bg-purple-100', tagText: 'text-purple-800' }
+        ];
+
+        // 获取分类标签样式
+        function getCategoryTagStyle(categoryName) {
+            const category = categories.find(c => c.name === categoryName);
+            if (category) {
+                return `${category.tagBg} ${category.tagText}`;
+            }
+            return 'bg-gray-100 text-gray-800';
+        }
+
         // 当前显示的文章ID
         let currentArticleId = 1;
 
         function showPage(pageId, articleId = null) {
             document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
+                page.classList.remove('active', 'with-animation');
             });
-            document.getElementById(pageId).classList.add('active');
+            
+            const pageEl = document.getElementById(pageId);
+            pageEl.classList.add('active');
+            
+            // 首页动画控制：只在首次加载时显示动画
+            if (pageId === 'home') {
+                const hasShownAnimation = localStorage.getItem('homeAnimationShown');
+                if (!hasShownAnimation) {
+                    pageEl.classList.add('with-animation');
+                    localStorage.setItem('homeAnimationShown', 'true');
+                }
+            }
             
             const sidebar = document.querySelector('.sidebar');
             if (sidebar) {
@@ -688,6 +776,11 @@ nano hello.txt
             // 渲染文章列表页
             if (pageId === 'articles') {
                 renderArticlesList();
+            }
+            
+            // 渲染分类页
+            if (pageId === 'categories') {
+                showCategoriesList();
             }
             
             // 渲染文章详情页
@@ -700,6 +793,87 @@ nano hello.txt
             }
         }
 
+        // 显示分类列表
+        function showCategoriesList() {
+            document.getElementById('categories-list-view').classList.remove('hidden');
+            document.getElementById('category-articles-view').classList.add('hidden');
+            renderCategoriesList();
+        }
+
+        // 渲染分类列表
+        function renderCategoriesList() {
+            const container = document.getElementById('categories-list');
+            if (!container) {
+                console.error('无法找到分类列表容器');
+                return;
+            }
+            
+            container.innerHTML = categories.map(category => {
+                // 统计该分类下的文章数量
+                const articleCount = articles.filter(a => a.category === category.name).length;
+                return `
+                    <div class="cursor-pointer hover:shadow-md transition-all duration-200" onclick="showCategoryArticles('${category.name}')">
+                        <div class="bg-gradient-to-r ${category.color} border-l-4 ${category.borderColor} p-5 rounded-lg">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-2xl">${category.icon}</span>
+                                <div class="text-xl font-bold text-gray-800">${category.name}</div>
+                            </div>
+                            <div class="text-gray-600">${articleCount} 篇文章</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 显示指定分类的文章
+        function showCategoryArticles(categoryName) {
+            document.getElementById('categories-list-view').classList.add('hidden');
+            document.getElementById('category-articles-view').classList.remove('hidden');
+            
+            // 更新标题
+            const categoryTitle = document.getElementById('category-title');
+            if (categoryTitle) {
+                categoryTitle.textContent = categoryName;
+            }
+            
+            // 渲染该分类下的文章
+            renderCategoryArticles(categoryName);
+        }
+
+        // 渲染分类文章列表
+        function renderCategoryArticles(categoryName) {
+            const container = document.getElementById('category-articles');
+            if (!container) {
+                console.error('无法找到分类文章容器');
+                return;
+            }
+            
+            const categoryArticles = articles.filter(a => a.category === categoryName);
+            
+            if (categoryArticles.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center py-8">该分类下暂无文章</div>';
+                return;
+            }
+            
+            container.innerHTML = categoryArticles.map(article => `
+                <div class="article-card bg-white border border-gray-300 rounded-lg p-5" onclick="window.location.href='articles/${article.date}.html'">
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg font-semibold text-gray-800">${article.title}</span>
+                                    <span class="px-2 py-1 rounded text-xs font-medium ${getCategoryTagStyle(article.category)}">${article.category}</span>
+                                </div>
+                                <div class="text-sm text-gray-500">${article.date}</div>
+                            </div>
+                            <div class="text-gray-600">${article.summary}</div>
+                        </div>
+                        <img src="https://picsum.photos/seed/${article.imageSeed}/128/96" class="w-32 h-24 object-cover rounded" alt="封面图">
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function renderArticleDetail(articleId) {
             const article = articles.find(a => a.id === articleId);
             if (!article) {
@@ -710,7 +884,14 @@ nano hello.txt
             // 更新标题和日期
             const titleEl = document.getElementById('article-title');
             const dateEl = document.getElementById('article-date');
-            if (titleEl) titleEl.textContent = article.title;
+            if (titleEl) {
+                titleEl.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span>${article.title}</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium ${getCategoryTagStyle(article.category)}">${article.category}</span>
+                    </div>
+                `;
+            }
             if (dateEl) dateEl.textContent = article.date;
             
             // 更新封面图
@@ -733,7 +914,7 @@ nano hello.txt
                 return;
             }
             container.innerHTML = articles.map(article => `
-                <div class="article-card bg-white border border-gray-300 rounded-lg p-6" onclick="showPage('article-detail', ${article.id})">
+                <div class="article-card bg-white border border-gray-300 rounded-lg p-6" onclick="window.location.href='articles/${article.date}.html'">
                     <div class="flex justify-between items-start mb-4">
                         <div class="mac-dots">
                             <div class="mac-dot mac-dot-red"></div>
@@ -744,7 +925,10 @@ nano hello.txt
                     <div class="flex gap-4">
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-2">
-                                <div class="text-lg font-semibold text-gray-800">${article.title}</div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg font-semibold text-gray-800">${article.title}</span>
+                                    <span class="px-2 py-1 rounded text-xs font-medium ${getCategoryTagStyle(article.category)}">${article.category}</span>
+                                </div>
                                 <div class="text-sm text-gray-500">${article.date}</div>
                             </div>
                             <div class="text-gray-600">${article.summary}</div>
@@ -763,7 +947,7 @@ nano hello.txt
             }
             const recentArticles = articles.slice(0, 3);
             container.innerHTML = recentArticles.map(article => `
-                <div class="cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" onclick="showPage('article-detail', ${article.id})">
+                <div class="cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" onclick="window.location.href='articles/${article.date}.html'">
                     <div class="text-gray-800 font-medium">${article.title}</div>
                     <div class="text-sm text-gray-500">${article.date}</div>
                 </div>
@@ -773,6 +957,16 @@ nano hello.txt
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             console.log('页面已加载完成');
+            
+            // 首页首次加载时添加动画
+            const homePage = document.getElementById('home');
+            if (homePage && homePage.classList.contains('active')) {
+                const hasShownAnimation = localStorage.getItem('homeAnimationShown');
+                if (!hasShownAnimation) {
+                    homePage.classList.add('with-animation');
+                    localStorage.setItem('homeAnimationShown', 'true');
+                }
+            }
             
             // 渲染文章列表
             renderArticlesList();

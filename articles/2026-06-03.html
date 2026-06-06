@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web开发入门指南 - 个人博客</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Markdown 样式 */
+        .markdown-content h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+        .markdown-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        .markdown-content p {
+            margin-bottom: 1rem;
+            color: #4b5563;
+            line-height: 1.75;
+        }
+        .markdown-content ul, .markdown-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        .markdown-content code {
+            background-color: #f3f4f6;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+        .markdown-content pre {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin-left: 0;
+            margin-bottom: 1rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        .markdown-content th, .markdown-content td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            text-align: left;
+        }
+        .markdown-content th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .markdown-content strong {
+            font-weight: 700;
+            color: #1f2937;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #FFF5EB;
+            min-height: 100vh;
+        }
+        .mac-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .mac-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .mac-dot-red { background-color: #FF5F57; }
+        .mac-dot-yellow { background-color: #FEBC2E; }
+        .mac-dot-green { background-color: #28C840; }
+    </style>
+</head>
+<body>
+    <nav class="bg-white border border-gray-300 rounded-none px-6 py-3 flex justify-center items-center gap-8 flex-wrap">
+        <a href="../index.html" class="text-gray-800 hover:opacity-80 transition-opacity">首页</a>
+        <a href="../index.html#articles" class="text-gray-800 hover:opacity-80 transition-opacity">文章</a>
+        <a href="../index.html#categories" class="text-gray-800 hover:opacity-80 transition-opacity">分类</a>
+        <a href="../index.html#about-music" class="text-gray-800 hover:opacity-80 transition-opacity">关于无界音乐</a>
+        <a href="../index.html#about-me" class="text-gray-800 hover:opacity-80 transition-opacity">关于我</a>
+    </nav>
+
+    <div class="flex flex-col md:flex-row gap-6 p-4 md:p-8">
+        <div class="w-full md:w-64 flex-shrink-0">
+            <div class="bg-white border border-gray-300 rounded-lg p-6 flex flex-col items-center">
+                <img src="../007YgrxXgy1id9q7sonlwj31sq28xb2a.jpg" class="w-48 h-48 rounded-full mb-4 object-cover" alt="头像">
+                <div class="text-lg font-semibold text-gray-800 mb-4">Irving Wise</div>
+                <div class="text-gray-800 font-bold mb-6 text-center">咕咕嘎嘎，我要玩热血航线！</div>
+                <div class="flex flex-col gap-3 w-full">
+                    <a href="../index.html#awards" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 text-center">获奖经历</a>
+                    <a href="../index.html" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all duration-200 text-center">简介</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-1">
+            <div class="bg-white border border-gray-300 rounded-lg p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <button onclick="window.location.href='../index.html'" class="text-gray-600 hover:text-gray-800 font-medium flex items-center gap-2">
+                        ← 返回首页
+                    </button>
+                    <div class="mac-dots">
+                        <div class="mac-dot mac-dot-red"></div>
+                        <div class="mac-dot mac-dot-yellow"></div>
+                        <div class="mac-dot mac-dot-green"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl font-semibold text-gray-800">Web开发入门指南</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">技术</span>
+                    </div>
+                    <div class="text-gray-500">2026-06-03</div>
+                </div>
+                <img src="https://picsum.photos/seed/webdev/800/400" class="w-full h-48 md:h-64 object-cover rounded mb-6" alt="封面图">
+                <div class="markdown-content">
+                    <h1>Web开发入门指南</h1>
+                    <h2>什么是Web开发？</h2>
+                    <p>Web开发是创建网站和Web应用的过程，主要包括前端开发和后端开发。</p>
+                    <h2>前端三剑客</h2>
+                    <h3>HTML</h3>
+                    <p>HTML是网页的骨架，负责页面内容。</p>
+                    <h3>CSS</h3>
+                    <p>CSS负责网页的样式，让网页变得美观。</p>
+                    <h3>JavaScript</h3>
+                    <p>JavaScript为网页添加交互功能。</p>
+                    <h2>学习建议</h2>
+                    <blockquote>
+                        <p>实践是最好的老师！</p>
+                    </blockquote>
+                    <ol>
+                        <li>先学习HTML基础</li>
+                        <li>然后掌握CSS布局</li>
+                        <li>最后学习JavaScript</li>
+                        <li>动手做项目</li>
+                    </ol>
+                    <p><strong>加油！</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
